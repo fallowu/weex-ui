@@ -4,7 +4,7 @@
 
 ### 规则
 - 优先使用 Native 自带的 [Navigator Bar](https://developer.apple.com/documentation/uikit/uinavigationbar)
-     
+- 假如你想隐藏左边返回按钮，直接传入`leftButton=""`即可
 
 ## [Demo](https://h5.m.taobao.com/trip/wxc-minibar/index.html?_wx_tpl=https%3A%2F%2Fh5.m.taobao.com%2Ftrip%2Fwxc-minibar%2Fdemo%2Findex.native-min.js)
 <img src="https://img.alicdn.com/tfs/TB1IK_TfxPI8KJjSspfXXcCFXXa-750-1334.jpg" width="240"/>&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.alicdn.com/tfs/TB1EJY_SpXXXXcmXpXXXXXXXXXX-200-200.png" width="160"/>
@@ -58,7 +58,7 @@
 | text-color | `String` |`N`| `#333333` | 标题颜色 |
 | background-color | `String` |`N`| `#ffffff` | 背景颜色 |
 | use-default-return | `Boolean` |`N`| `true` | 是否使用默认的返回 |
-| show | `Boolean` | `true` |`N`| 是否显示 |
+| show | `Boolean` | `N` |`true`| 是否显示 |
 
 ### Slot
 当以上配置都不满足时候，你可以使用 slot 来自定义设置你的组件。   `weex-ui >= 0.3.9`

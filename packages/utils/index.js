@@ -27,7 +27,7 @@ const Utils = {
   },
   decodeIconFont (text) {
     // 正则匹配 图标和文字混排 eg: 我去上学校&#xe600;,天天不&#xe600;迟到
-    const regExp = /&#x[a-z]\d{3,4};?/;
+    const regExp = /&#x[a-z|0-9]{4,5};?/g;
     if (regExp.test(text)) {
       return text.replace(new RegExp(regExp, 'g'), function (iconText) {
         const replace = iconText.replace(/&#x/, '0x').replace(/;$/, '');
@@ -70,7 +70,7 @@ const Utils = {
     return parsedUrl.toString();
   },
   goToH5Page (jumpUrl, animated = false, callback = null) {
-    const Navigator = weex.requireModule('navigator')
+    const Navigator = weex.requireModule('navigator');
     const jumpUrlObj = new Utils.UrlParser(jumpUrl, true);
     const url = Utils.appendProtocol(jumpUrlObj.toString());
     Navigator.push({
@@ -86,6 +86,10 @@ const Utils = {
     isTrip () {
       const { appName } = weex.config.env;
       return appName === 'LX';
+    },
+    isBoat () {
+      const { appName } = weex.config.env;
+      return appName === 'Boat' || appName === 'BoatPlayground';
     },
     isWeb () {
       const { platform } = weex.config.env;
@@ -121,29 +125,6 @@ const Utils = {
     isAliWeex () {
       return Utils.env.isTmall() || Utils.env.isTrip() || Utils.env.isTaobao();
     },
-    supportsEB () {
-      const weexVersion = weex.config.env.weexVersion || '0';
-      const isHighWeex = Utils.compareVersion(weexVersion, '0.10.1.4') && (Utils.env.isIOS() || Utils.env.isAndroid());
-      const expressionBinding = weex.requireModule('expressionBinding');
-      return expressionBinding && expressionBinding.enableBinding && isHighWeex;
-    },
-
-    /**
-     * 判断Android容器是否支持是否支持expressionBinding(处理方式很不一致)
-     * @returns {boolean}
-     */
-    supportsEBForAndroid () {
-      return (Utils.env.isAndroid()) && Utils.env.supportsEB();
-    },
-
-    /**
-     * 判断IOS容器是否支持是否支持expressionBinding
-     * @returns {boolean}
-     */
-    supportsEBForIos () {
-      return (Utils.env.isIOS()) && Utils.env.supportsEB();
-    },
-
     /**
      * 获取weex屏幕真实的设置高度，需要减去导航栏高度
      * @returns {Number}
@@ -152,6 +133,14 @@ const Utils = {
       const { env } = weex.config;
       const navHeight = Utils.env.isWeb() ? 0 : (Utils.env.isIPhoneX() ? 176 : 132);
       return env.deviceHeight / env.deviceWidth * 750 - navHeight;
+    },
+    /**
+     * 获取weex屏幕真实的设置高度
+     * @returns {Number}
+     */
+    getScreenHeight () {
+      const { env } = weex.config;
+      return env.deviceHeight / env.deviceWidth * 750;
     }
   },
 
@@ -200,6 +189,13 @@ const Utils = {
     }
     return groups;
   },
+  /*
+   * 截断字符串
+   * @param str 传入字符串
+   * @param len 截断长度
+   * @param hasDot 末尾是否...
+   * @returns {String}
+   */
   truncateString (str, len, hasDot = true) {
     let newLength = 0;
     let newStr = '';
@@ -223,6 +219,81 @@ const Utils = {
       newStr += '...';
     }
     return newStr;
+  },
+  /*
+   * 转换 obj 为 url params参数
+   * @param obj 传入字符串
+   * @returns {String}
+   */
+  objToParams (obj) {
+    let str = "";
+    for (let key in obj) {
+      if (str !== "") {
+        str += "&";
+      }
+      str += key + "=" + encodeURIComponent(obj[key]);
+    }
+    return str;
+  },
+  /*
+   * 转换 url params参数为obj
+   * @param str 传入url参数字符串
+   * @returns {Object}
+   */
+  paramsToObj (str) {
+    let obj = {};
+    try {
+      obj = JSON.parse('{"' + decodeURI(str).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}')
+    } catch (e) {
+      console.log(e);
+    }
+    return obj;
+  },
+  animation: {
+    /**
+     * 返回定义页面转场动画起初的位置
+     * @param ref
+     * @param transform 运动类型
+     * @param status
+     * @param callback 回调函数
+     */
+    pageTransitionAnimation (ref, transform, status, callback) {
+      const animation = weex.requireModule('animation');
+      animation.transition(ref, {
+        styles: {
+          transform: transform
+        },
+        duration: status ? 250 : 300, // ms
+        timingFunction: status ? 'ease-in' : 'ease-out',
+        delay: 0 // ms
+      }, function () {
+        callback && callback();
+      });
+    }
+  },
+  uiStyle: {
+    /**
+     * 返回定义页面转场动画起初的位置
+     * @param animationType 页面转场动画的类型 push，model
+     * @param size 分割数组的长度
+     * @returns {}
+     */
+    pageTransitionAnimationStyle (animationType) {
+      if (animationType === 'push') {
+        return {
+          left: '750px',
+          top: '0px',
+          height: (weex.config.env.deviceHeight / weex.config.env.deviceWidth * 750) + 'px'
+        }
+      } else if (animationType === 'model') {
+        return {
+          top: (weex.config.env.deviceHeight / weex.config.env.deviceWidth * 750) + 'px',
+          left: '0px',
+          height: (weex.config.env.deviceHeight / weex.config.env.deviceWidth * 750) + 'px'
+        }
+      }
+      return {}
+    }
   }
 };
 

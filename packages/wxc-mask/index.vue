@@ -1,5 +1,6 @@
 <!-- CopyRight (C) 2017-2022 Alibaba Group Holding Limited. -->
 <!-- Created by Tw93 on 16/10/25. -->
+<!-- Updated by Tw93 on 17/01/06. -->
 <!--A Mask.-->
 
 <template>
@@ -7,6 +8,7 @@
     <wxc-overlay :show="show && hasOverlay"
                  v-if="show"
                  v-bind="mergeOverlayCfg"
+                 :can-auto-close="overlayCanClose"
                  @wxcOverlayBodyClicking="wxcOverlayBodyClicking"
                  @wxcOverlayBodyClicked="wxcOverlayBodyClicked"></wxc-overlay>
     <div ref="wxc-mask"
@@ -74,6 +76,10 @@
         type: [String, Number],
         default: 702
       },
+      top: {
+        type: Number,
+        default: 0
+      },
       show: {
         type: Boolean,
         default: false
@@ -124,7 +130,7 @@
     data: () => ({
       closeIcon: 'https://gw.alicdn.com/tfs/TB1qDJUpwMPMeJjy1XdXXasrXXa-64-64.png',
       maskTop: 264,
-      opacity: 0
+      opened: false
     }),
     computed: {
       mergeOverlayCfg () {
@@ -134,7 +140,7 @@
         }
       },
       maskStyle () {
-        const { width, height, showClose, hasAnimation, opacity } = this;
+        const { width, height, showClose, hasAnimation, opened, top } = this;
         const newHeight = showClose ? height - 0 + 100 : height;
         const { deviceHeight, deviceWidth, platform } = weex.config.env;
         const _deviceHeight = deviceHeight || 1334;
@@ -145,8 +151,8 @@
           width: width + 'px',
           height: newHeight + 'px',
           left: (750 - width) / 2 + 'px',
-          top: (pageHeight - height) / 2 + 'px',
-          opacity: hasAnimation ? opacity : 1
+          top: (top || (pageHeight - height) / 2) + 'px',
+          opacity: hasAnimation && !opened ? 0 : 1
         }
       },
       contentStyle () {
@@ -182,7 +188,8 @@
         }
       },
       needEmit (bool = false) {
-        !bool && (this.$emit('wxcMaskSetHidden', {}));
+        this.opened = bool;
+        !bool && this.$emit('wxcMaskSetHidden', {});
       },
       appearMask (bool, duration = this.duration) {
         const { hasAnimation, timingFunction } = this;

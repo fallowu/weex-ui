@@ -1,6 +1,6 @@
 <!-- CopyRight (C) 2017-2022 Alibaba Group Holding Limited. -->
 <!-- Created by Tw93 on 17/07/28. -->
-<!-- Updated by Tw93 on 17/11/16.-->
+<!-- Updated by Tw93 on 18/01/22.-->
 
 <template>
   <div class="wxc-tab-page"
@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="tab-title-list"
-         :style="{ backgroundColor: tabStyles.bgColor, height: (tabStyles.height)+'px'}">
+         :style="{ backgroundColor: tabStyles.bgColor, height: (tabStyles.height + (isIPhoneX ? 78 : 0))+'px',paddingBottom:isIPhoneX?'78px':'0'}">
       <div class="title-item"
            v-for="(v,index) in tabTitles"
            :key="index"
@@ -23,20 +23,20 @@
            :aria-label="`${v.title?v.title:'标签'+index}`">
 
         <image :src="currentPage == index ? v.activeIcon : v.icon"
-               v-if="titleType === 'icon'"
+               v-if="titleType === 'icon' && !titleUseSlot"
                :style="{ width: tabStyles.iconWidth + 'px', height:tabStyles.iconHeight+'px'}"></image>
 
-        <text class="icon-font"
-              v-if="titleType === 'iconFont' && v.codePoint"
-              :style="{fontSize: tabStyles.iconFontSize+'px', color: currentPage == index ? tabStyles.activeIconFontColor : tabStyles.iconFontColor}">{{decode(v.codePoint)}}</text>
-
+        <text v-if="titleType === 'iconFont' && v.codePoint && !titleUseSlot"
+              :style="{fontFamily: 'wxcIconFont',fontSize: tabStyles.iconFontSize+'px', marginBottom:tabStyles.iconFontMarginBottom ? (tabStyles.iconFontMarginBottom +'px') : '8px', color: currentPage == index ? tabStyles.activeIconFontColor : tabStyles.iconFontColor}">{{v.codePoint}}</text>
         <text
+          v-if="!titleUseSlot"
           :style="{ fontSize: tabStyles.fontSize+'px', fontWeight: (currentPage == index && tabStyles.isActiveTitleBold)? 'bold' : 'normal', color: currentPage == index ? tabStyles.activeTitleColor : tabStyles.titleColor, paddingLeft:tabStyles.textPaddingLeft+'px', paddingRight:tabStyles.textPaddingRight+'px'}"
           class="tab-text">{{v.title}}</text>
-        <div class="desc-tag" v-if="v.badge">
+        <div class="desc-tag" v-if="v.badge && !titleUseSlot">
           <text class="desc-text">{{v.badge}}</text>
         </div>
-        <div v-if="v.dot && !v.badge" class="dot"></div>
+        <div v-if="v.dot && !v.badge && !titleUseSlot" class="dot"></div>
+        <slot :name="`tab-title-${index}`" v-if="titleUseSlot"></slot>
       </div>
     </div>
   </div>
@@ -49,7 +49,6 @@
     left: 0;
     right: 0;
     bottom: 0;
-    flex-direction: column;
   }
 
   .tab-title-list {
@@ -60,16 +59,13 @@
   .title-item {
     justify-content: center;
     align-items: center;
-    flex-direction: column;
     border-bottom-style: solid;
-    position: relative;
   }
 
   .tab-page-wrap {
     width: 750px;
     flex: 1;
     overflow: hidden;
-    position: relative;
   }
 
   .tab-container {
@@ -117,10 +113,6 @@
     color: #ffffff;
   }
 
-  .icon-font {
-    margin-bottom: 8px;
-    font-family: wxcIconFont;
-  }
 </style>
 
 <script>
@@ -158,6 +150,10 @@
         type: String,
         default: 'icon'
       },
+      titleUseSlot: {
+        type: Boolean,
+        default: false
+      },
       isTabView: {
         type: Boolean,
         default: true
@@ -184,14 +180,12 @@
       if (titleType === 'iconFont' && tabStyles.iconFontUrl) {
         dom.addRule('fontFace', {
           'fontFamily': "wxcIconFont",
-          'src': `url(${tabStyles.iconFontUrl})`
+          'src': `url('${tabStyles.iconFontUrl}')`
         });
       }
+      this.isIPhoneX = Utils.env.isIPhoneX();
     },
     methods: {
-      decode (text) {
-        return Utils.decodeIconFont(text)
-      },
       next () {
         let page = this.currentPage;
         if (page < this.tabTitles.length - 1) {

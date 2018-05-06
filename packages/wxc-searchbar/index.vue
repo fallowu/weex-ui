@@ -5,6 +5,7 @@
 <template>
   <div>
     <div :class="['wxc-search-bar','wxc-search-bar-'+theme]"
+         :style="barStyle"
          v-if="mod==='default'">
       <input @blur="onBlur"
              @focus="onFocus"
@@ -21,7 +22,7 @@
       <div v-if="disabled"
            @click="inputDisabledClicked"
            class="disabled-input"></div>
-      <image class="search-bar-ICON"
+      <image class="search-bar-icon"
              :aria-hidden="true"
              :src="inputIcon"></image>
       <image class="search-bar-close"
@@ -30,10 +31,12 @@
              @click="closeClicked"
              :src="closeIcon"></image>
       <text :class="['search-bar-button','search-bar-button-'+theme]"
+            :style="buttonStyle"
             v-if="needShowCancel"
-            @click="cancelClicked">取消 </text>
+            @click="cancelClicked">{{cancelLabel}}</text>
     </div>
     <div :class="['wxc-search-bar','wxc-search-bar-'+theme]"
+         :style="barStyle"
          v-if="mod==='hasDep'">
       <input @blur="onBlur"
              @focus="onFocus"
@@ -55,7 +58,7 @@
                :aria-hidden="true"
                class="dep-arrow"></image>
       </div>
-      <image class="search-bar-ICON ICON-has-dep"
+      <image class="search-bar-icon icon-has-dep"
              :aria-hidden="true"
              :src="inputIcon"></image>
     </div>
@@ -88,16 +91,14 @@
     height: 64px;
     line-height: 64px;
     background-color: #E5E5E5;
-    outline: none;
     border-radius: 6px;
   }
 
   .search-bar-input-yellow {
     background-color: #fff6d6;
-    placeholder-color: #666666;
   }
 
-  .search-bar-ICON {
+  .search-bar-icon {
     position: absolute;
     width: 30px;
     height: 30px;
@@ -170,7 +171,7 @@
     height: 24px;
   }
 
-  .ICON-has-dep {
+  .icon-has-dep {
     left: 214px;
   }
 
@@ -217,6 +218,10 @@
         type: String,
         default: 'gray'
       },
+      barStyle: {
+        type: Object,
+        default: () => ({})
+      },
       defaultValue: {
         type: String,
         default: ''
@@ -224,6 +229,10 @@
       placeholder: {
         type: String,
         default: '搜索'
+      },
+      cancelLabel: {
+        type: String,
+        default: '取消 '
       },
       depName: {
         type: String,
@@ -233,6 +242,13 @@
     computed: {
       needShowCancel () {
         return this.alwaysShowCancel || this.showCancel;
+      },
+      buttonStyle () {
+        const { barStyle } = this;
+        if (barStyle.backgroundColor) {
+            return {backgroundColor:barStyle.backgroundColor}
+        }
+        return {}
       }
     },
     data: () => ({
@@ -242,6 +258,7 @@
       showCancel: false,
       showClose: false,
       value: ''
+
     }),
     created () {
       this.defaultValue && (this.value = this.defaultValue);
@@ -263,6 +280,9 @@
         this.$refs['search-input'].blur();
       },
       onFocus () {
+        if (this.isDisabled) {
+          return;
+        }
         this.showCancel = true;
         this.detectShowClose();
         this.$emit('wxcSearchbarInputOnFocus', { value: this.value });

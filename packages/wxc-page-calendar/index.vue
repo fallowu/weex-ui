@@ -3,7 +3,7 @@
 <!-- Updated by Tw93 on 17/11/22. -->
 
 <template>
-  <div class="wxc-page-calendar" ref="pageCalendar">
+  <div class="wxc-page-calendar" ref="pageCalendar" :style="calendarExtendStyle">
     <wxc-minibar :show="showTitle"
                  v-bind="minibarCfg"
                  :use-default-return="false"
@@ -45,7 +45,6 @@
 
   const isWeb = Utils.env.isWeb();
 
-  const animation = weex.requireModule('animation');
   const dom = weex.requireModule('dom');
 
   import WxcMinibar from '../wxc-minibar'
@@ -54,6 +53,10 @@
     components: { WxcMinibar },
     props: {
       selectedDate: Array,
+      animationType: {
+        type: String,
+        default: 'push'
+      },
       dateRange: {
         type: Array,
         required: true,
@@ -96,6 +99,9 @@
       arriveDate: ''
     }),
     computed: {
+      calendarExtendStyle () {
+        return Utils.uiStyle.pageTransitionAnimationStyle(this.animationType)
+      },
       monthsArray () {
         const { dateRange: range, today, departDate, arriveDate, selectedNote, descList } = this;
         const param = { range, today, departDate, arriveDate, selectedNote, descList }
@@ -191,29 +197,26 @@
           this.arriveDate = '';
         }
       },
-      _animate (width = 0) {
-        const duration = isWeb ? 200 : 300;
-        animation.transition(this.$refs.pageCalendar, {
-          styles: {
-            transform: `translateX(${-width}px)`
-          },
-          timingFunction: 'ease-out',
-          duration
-        }, () => {
-        });
+      _animate (status, callback = null) {
+        var ref = this.$refs.pageCalendar
+        if(this.animationType==='push') {
+          Utils.animation.pageTransitionAnimation(ref,`translateX(${status ? -750 : 750}px)`,status,callback)
+        } else if (this.animationType==='model') {
+          Utils.animation.pageTransitionAnimation(ref,`translateY(${status ? -Utils.env.getScreenHeight() : Utils.env.getScreenHeight()}px)`,status,callback)
+        }
       },
       show () {
         const { needDestroy } = this;
         needDestroy && (this.isShow = true);
         this.reSelect = true;
         this.detectShow();
-        this._animate(750);
+        this._animate(true);
         needDestroy && this.scrollToDate();
       },
       hide () {
         this.needDestroy && (this.isShow = false);
         this.reSelect = false;
-        this._animate(0);
+        this._animate(false);
         this.$emit('wxcPageCalendarHide', {});
       }
     }
@@ -222,12 +225,9 @@
 <style scoped>
   .wxc-page-calendar {
     position: fixed;
-    top: 0;
-    bottom: 0;
-    right: -750px;
     width: 750px;
     color: #333333;
-    background-color: #fff;
+    background-color: #ffffff;
   }
 
   .flex-item {
@@ -255,7 +255,6 @@
 
   .calendar-list {
     flex: 1;
-    flex-direction: column;
   }
 
   .month-text {
@@ -276,7 +275,6 @@
     border-color: #f2f3f4;
     align-items: center;
     justify-content: space-between;
-    position: relative;
   }
 
   .row-item {
@@ -314,7 +312,6 @@
     color: #999999;
     text-align: center;
     font-size: 24px;
-    overflow: hidden;
     text-overflow: ellipsis;
   }
 
@@ -327,7 +324,7 @@
   }
 
   .item-row-selected {
-    color: #fff;
+    color: #ffffff;
     background-color: #FFC900;
     text-align: center;
   }

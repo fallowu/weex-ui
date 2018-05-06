@@ -1,9 +1,11 @@
+- [**Weex Ui 半年开源之路**](docs/weex-ui-report)
 - Layout
     - [wxc-button](packages/wxc-button/)
     - [wxc-cell](packages/wxc-cell/)
     - [wxc-ep-slider](packages/wxc-ep-slider/)
     - [wxc-lightbox](packages/wxc-lightbox/)
     - [wxc-overlay](packages/wxc-overlay/)
+    - [wxc-popover](packages/wxc-popover/)
     - [wxc-popup](packages/wxc-popup/)
     - [wxc-result](packages/wxc-result/)
     - [wxc-slide-nav](packages/wxc-slide-nav/)
@@ -16,13 +18,15 @@
 - Data Entry
     - [wxc-checkbox](packages/wxc-checkbox/)
     - [wxc-countdown](packages/wxc-countdown/)
+    - [wxc-grid-select](packages/wxc-grid-select/)
     - [wxc-radio](packages/wxc-radio/)
     - [wxc-slider-bar](packages/wxc-slider-bar/)
     - [wxc-stepper](packages/wxc-stepper/)
     - [wxc-searchbar](packages/wxc-searchbar/)
     
 - Data Display
-    - [wxc-grid-select](packages/wxc-grid-select/)
+    - [wxc-city](packages/wxc-city/)
+    - [wxc-icon](packages/wxc-icon/)
     - [wxc-indexlist](packages/wxc-indexlist/)
     - [wxc-page-calendar](packages/wxc-page-calendar/)
     - [wxc-rich-text](packages/wxc-rich-text/)
@@ -41,6 +45,9 @@
 - Service
    - [utils](packages/utils/) 
    
-- [**How to use with weex-toolkit**](docs/with-weex-toolkit)
-- [**FQA**](docs/faq)
+- [**Weex + Ui - Weex Conf 2018**](docs/weex-ui-weex-conf-2018)
+- [**Use Weex Ui with weex-toolkit**](docs/with-weex-toolkit)
+- [**FAQ**](docs/faq)
 - [**CHANGELOG**](CHANGELOG)
+- [Who is using Weex Ui?](docs/who_use.md)
+

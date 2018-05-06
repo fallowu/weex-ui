@@ -18,7 +18,6 @@
   <wxc-tab-bar :tab-titles="tabTitles"
                :tab-styles="tabStyles"
                title-type="icon"
-               :tab-page-height="tabPageHeight"
                @wxcTabBarCurrentTabSelected="wxcTabBarCurrentTabSelected">
     <!-- 第一个页面内容-->
     <div class="item-container" :style="contentStyle"><text>首页</text></div>
@@ -56,6 +55,8 @@
     }),
     created () {
       const tabPageHeight = Utils.env.getPageHeight();
+      // 如果页面没有导航栏，可以用下面这个计算高度的方法
+      // const tabPageHeight = env.deviceHeight / env.deviceWidth * 750;
       const { tabStyles } = this;
       this.contentStyle = { height: (tabPageHeight - tabStyles.height) + 'px' };
     },
@@ -79,9 +80,9 @@
 | tab-titles | `Array` |`Y`| `[]` | Tab显示 [配置](https://github.com/alibaba/weex-ui/blob/master/example/tab-bar/config.js#L7)|
 | title-type | `String` |`N`| `icon` | 类型 `icon`/`text`/`iconFont`(注1)|
 | tab-styles | `Array` |`N`| `[]` |  底部 Tab [样式配置](https://github.com/alibaba/weex-ui/blob/master/example/tab-bar/config.js)|
-| tab-page-height | `Number` |`N`| `1334` |Tab page 页面的高度 |
 | is-tab-view | `Boolean` |`N`| `true` |当设置为`false`，同时 tab 配置 url 参数即可跳出 |
 | duration | `Number` |`N`| `300` | 页面切换动画的时间 |
+| title-use-slot | `Boolean` |`N`| `false` | 使用 slot 配置底部导航 (注2)|
 | timing-function | `String` |`N`| `-` | 页面切换动画函数 |
 | wrap-bg-color | `String` |`N`| `#F2F3F4` |页面背景颜色|
 
@@ -91,14 +92,15 @@
  
 ```
  // https://github.com/alibaba/weex-ui/blob/master/example/tab-bar/config.js#L51
-  tabTitles: [
+ // '&#xe608;' -> '\ue608'
+  tabIconFontTitles: [
     {
       title: 'Home',
-      codePoint: '&#xe608;'
+      codePoint: '\ue608'
     },
     {
       title: 'Message',
-      codePoint: '&#xe752;',
+      codePoint: '\ue752',
       badge: 5
     },
     // ....
@@ -116,11 +118,22 @@
       textPaddingLeft: 10,
       textPaddingRight: 10,
       iconFontSize: 50,
+      iconFontMarginBottom: 8,
       iconFontColor: '#333333',
       activeIconFontColor: 'red',
       iconFontUrl: '//at.alicdn.com/t/font_501019_mauqv15evc1pp66r.ttf'
     }
 ```
+
+### 注2：自定义底部导航块
+- 当使用slot的方式配置底部导航的时候，需要确保原有简单配置已经不能满足现有需求情况下再使用，可以传入参数`:title-use-slot="true"`,同时在wxc-tab-bar组件内部传入如下slot对应节点即可
+- 可以通过遍历到方式来生成，同时根据wxcTabBarCurrentTabSelected来确定当前的选择页，自己管理颜色即可。
+```
+<div slot="tab-title-0"><text>111</text></div>
+<div slot="tab-title-1"><text>222</text></div>
+<div slot="tab-title-2"><text>333</text></div>
+```
+
 
 ### 主动触发设置页面
 

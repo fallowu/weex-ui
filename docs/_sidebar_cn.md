@@ -1,9 +1,11 @@
+- [**Weex Ui 半年开源之路**](docs/weex-ui-report)
 - 布局
     - [wxc-button 按钮](cn/packages/wxc-button/)
     - [wxc-cell 单元格](cn/packages/wxc-cell/)
     - [wxc-ep-slider 神奇滑动](cn/packages/wxc-ep-slider/)
     - [wxc-lightbox 幻灯片](cn/packages/wxc-lightbox/)
     - [wxc-overlay 蒙层](cn/packages/wxc-overlay/)
+    - [wxc-popover 气泡菜单](cn/packages/wxc-popover/)
     - [wxc-popup 弹层](cn/packages/wxc-popup/)
     - [wxc-result 结果页](cn/packages/wxc-result/)
     - [wxc-slide-nav 视窗增大](cn/packages/wxc-slide-nav/)
@@ -15,6 +17,7 @@
  
 - 数据输入
     - [wxc-checkbox 多选](cn/packages/wxc-checkbox/)
+    - [wxc-city 城市选择](cn/packages/wxc-city/)
     - [wxc-countdown 倒计时](cn/packages/wxc-countdown/)
     - [wxc-radio 单选](cn/packages/wxc-radio/)
     - [wxc-slider-bar 滑动输入条](cn/packages/wxc-slider-bar/)
@@ -23,6 +26,7 @@
     
 - 数据展示
     - [wxc-grid-select 多格筛选](cn/packages/wxc-grid-select/)
+    - [wxc-icon 常用 iconFont](cn/packages/wxc-icon/)
     - [wxc-indexlist 索引列表](cn/packages/wxc-indexlist/)
     - [wxc-page-calendar 日历](cn/packages/wxc-page-calendar/)
     - [wxc-rich-text 富文本](cn/packages/wxc-rich-text/)
@@ -40,7 +44,9 @@
    
 - 服务
    - [utils 功能函数](cn/packages/utils/) 
-   
-- [**在 weex-toolkit 项目中使用**](cn/with-weex-toolkit)
+ 
+- [**Weex + Ui - Weex Conf 2018**](cn/weex-ui-weex-conf-2018)  
+- [**搭配 weex-toolkit 使用 Weex Ui**](cn/with-weex-toolkit)
 - [**常见问题**](cn/faq)
-- [**CHANGELOG**](CHANGELOG)
+- [**CHANGELOG**](cn/CHANGELOG)
+- [谁在使用 Weex Ui?](cn/who_use.md)

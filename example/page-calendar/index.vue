@@ -4,16 +4,26 @@
 <template>
   <div class="wxc-demo">
     <scroller class="scroller">
-      <title title="wxc-page-calendar" class="title"></title>
+      <title title="wxc-page-calendar"></title>
       <category title="使用案例"></category>
       <div class="btn"
-           @click="showCalendar">
-        <text class="btn-txt">单程日历</text>
+           @click="showCalendarPush">
+        <text class="btn-txt">单程日历(push)</text>
       </div>
 
       <div class="btn btn-margin yellow"
-           @click="showReturnCalendar">
-        <text class="btn-txt">往返日历</text>
+           @click="showReturnCalendarPush">
+        <text class="btn-txt">往返日历(push)</text>
+      </div>
+
+      <div class="btn"
+           @click="showCalendarModel">
+        <text class="btn-txt">单程日历(model)</text>
+      </div>
+
+      <div class="btn btn-margin yellow"
+           @click="showReturnCalendarModel">
+        <text class="btn-txt">往返日历(model)</text>
       </div>
 
       <div class="panel">
@@ -21,7 +31,9 @@
               class="text">当前日期: {{currentDate}}</text>
       </div>
 
-      <wxc-page-calendar :date-range="dateRange"
+      <wxc-page-calendar ref="wxcPageCalendarPush"
+                         :animationType="animationTypePush"
+                         :date-range="dateRange"
                          :selected-date="selectedDate"
                          :selected-note="selectedNote"
                          :is-range="isRange"
@@ -30,7 +42,19 @@
                          :desc-list="descList"
                          @wxcPageCalendarBackClicked="wxcPageCalendarBackClicked"
                          @wxcPageCalendarDateSelected="wxcPageCalendarDateSelected"
-                         ref="wxcPageCalendar"></wxc-page-calendar>
+      ></wxc-page-calendar>
+      <wxc-page-calendar ref="wxcPageCalendarModel"
+                         :animationType="animationTypeModel"
+                         :date-range="dateRange"
+                         :selected-date="selectedDate"
+                         :selected-note="selectedNote"
+                         :is-range="isRange"
+                         :needDestroy="false"
+                         :minibar-cfg="minibarCfg"
+                         :desc-list="descList"
+                         @wxcPageCalendarBackClicked="wxcPageCalendarBackClicked"
+                         @wxcPageCalendarDateSelected="wxcPageCalendarDateSelected"
+      ></wxc-page-calendar>
     </scroller>
   </div>
 </template>
@@ -52,10 +76,10 @@
   .btn {
     width: 600px;
     height: 80px;
-    margin-top: 300px;
+    margin-top: 100px;
+    margin-left: 75px;
     flex-direction: row;
     align-items: center;
-    align-self: center;
     justify-content: center;
     border-radius: 6px;
     background-color: rgb(92, 184, 92);
@@ -81,13 +105,9 @@
   }
 
   .panel {
-    align-self: center;
     height: 300px;
+    align-items: center;
     margin-top: 40px;
-  }
-
-  .title {
-    align-self: flex-start;
   }
 </style>
 
@@ -103,6 +123,8 @@
   export default {
     components: { Title, Category, WxcPageCalendar },
     data: () => ({
+      animationTypePush:'push', // 默认使用push方式，若使用push模式此参数可以不传
+      animationTypeModel:'model',
       currentDate: '',
       selectedDate: ['2017-12-20', '2017-12-30'],
       isRange: true,
@@ -136,16 +158,28 @@
           message: '你按了返回按钮'
         })
       },
-      showCalendar () {
+      showCalendarPush () {
         this.isRange = false;
         setTimeout(() => {
-          this.$refs['wxcPageCalendar'].show();
+          this.$refs['wxcPageCalendarPush'].show();
         }, 1);
       },
-      showReturnCalendar () {
+      showReturnCalendarPush () {
         this.isRange = true;
         setTimeout(() => {
-          this.$refs['wxcPageCalendar'].show();
+          this.$refs['wxcPageCalendarPush'].show();
+        }, 1);
+      },
+      showCalendarModel () {
+        this.isRange = false;
+        setTimeout(() => {
+          this.$refs['wxcPageCalendarModel'].show();
+        }, 1);
+      },
+      showReturnCalendarModel () {
+        this.isRange = true;
+        setTimeout(() => {
+          this.$refs['wxcPageCalendarModel'].show();
         }, 1);
       }
     }
